@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>情商 EQ 测试 - PsycheTest 心理研究所</title>
+<meta name="description" content="25道情景选择题测量你的情商水平，获取5维度雷达图分析。">
+<meta property="og:title" content="情商EQ测试 - PsycheTest">
+<meta property="og:description" content="测测你的情商有多高？5维度雷达图深度分析！">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);min-height:100vh;color:#333}
+.header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;max-width:800px;margin:0 auto}
+.logo{color:#fff;font-size:1.4em;font-weight:800;text-decoration:none}
+.lang-btn{background:rgba(255,255,255,.2);color:#fff;border:none;padding:8px 16px;border-radius:20px;cursor:pointer;font-size:.9em;backdrop-filter:blur(10px)}
+.container{max-width:700px;margin:0 auto;padding:0 20px 60px}
+.quiz-card{background:#fff;border-radius:20px;padding:36px 32px;box-shadow:0 8px 30px rgba(0,0,0,.1);margin-bottom:24px}
+.progress{background:#e9ecef;border-radius:10px;height:8px;margin-bottom:24px;overflow:hidden}
+.progress-bar{height:100%;background:linear-gradient(90deg,#f093fb,#f5576c);border-radius:10px;transition:width .4s}
+.q-number{font-size:.85em;color:#999;margin-bottom:8px}
+.q-text{font-size:1.15em;font-weight:600;margin-bottom:20px;line-height:1.5}
+.option{display:block;width:100%;text-align:left;padding:14px 20px;margin:8px 0;border:2px solid #e9ecef;border-radius:14px;background:#fff;font-size:.95em;cursor:pointer;transition:.3s;line-height:1.5}
+.option:hover{border-color:#f093fb;background:#fff0f8}
+.option.selected{border-color:#f5576c;background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff}
+.nav-btns{display:flex;gap:12px;margin-top:20px}
+.nav-btn{flex:1;padding:14px;border:none;border-radius:14px;font-size:1em;font-weight:600;cursor:pointer;transition:.3s}
+.nav-btn.prev{background:#e9ecef;color:#666}
+.nav-btn.next{background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff}
+.nav-btn:disabled{opacity:.4;cursor:not-allowed}
+.result-card{background:#fff;border-radius:20px;padding:36px 32px;box-shadow:0 8px 30px rgba(0,0,0,.1);display:none}
+.eq-score{font-size:3.5em;font-weight:800;background:linear-gradient(135deg,#f093fb,#f5576c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;margin:12px 0}
+.eq-label{text-align:center;font-size:1.3em;font-weight:700;margin-bottom:24px}
+.radar-wrap{display:flex;justify-content:center;margin:20px 0}
+canvas{max-width:320px}
+.dim-list{margin:20px 0}
+.dim-item{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;margin:6px 0;background:#f8f0ff;border-radius:12px}
+.dim-item .label{font-weight:600;font-size:.95em}
+.dim-item .bar-bg{flex:1;height:8px;background:#e9ecef;border-radius:4px;margin:0 12px}
+.dim-item .bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#f093fb,#f5576c)}
+.dim-item .score{font-weight:700;color:#f5576c;min-width:36px;text-align:right}
+.result-text{background:#f8f0ff;border-radius:14px;padding:16px;margin:16px 0;line-height:1.7;font-size:.95em;color:#555}
+.share-btn{display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff;border:none;border-radius:14px;font-size:1em;font-weight:600;cursor:pointer;margin:10px 6px}
+.share-btn.outline{background:#fff;color:#f5576c;border:2px solid #f5576c}
+.tip-box{background:rgba(255,255,255,.12);backdrop-filter:blur(10px);border-radius:16px;padding:16px 20px;max-width:420px;margin:24px auto;text-align:center;color:#fff;font-size:.9em}
+.tip-box a{color:#ffd700;text-decoration:none;font-weight:600}
+.home-link{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9em}
+.btn-row{text-align:center}
+</style>
+</head>
+<body>
+<header class="header">
+  <a href="index.html" class="home-link" id="homeLink">← 返回首页</a>
+  <a href="index.html" class="logo">🧠 PsycheTest</a>
+  <button class="lang-btn" onclick="toggleLang()">🌐 <span id="langLabel">EN</span></button>
+</header>
+<div class="container">
+  <div class="quiz-card" id="quizCard">
+    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="q-number" id="qNum"></div>
+    <div class="q-text" id="qText"></div>
+    <div id="options"></div>
+    <div class="nav-btns">
+      <button class="nav-btn prev" id="prevBtn" onclick="nav(-1)">←</button>
+      <button class="nav-btn next" id="nextBtn" onclick="nav(1)">→</button>
+    </div>
+  </div>
+  <div class="result-card" id="resultCard"></div>
+  <div class="tip-box">
+    <span id="tipText">觉得测得准？请研究员喝杯咖啡 ☕</span><br>
+    <a href="https://etherscan.io/address/0xEeD903787Cb86bcCc17777E5C7d10A4c2De43823" target="_blank">0xEeD9...3823</a>
+  </div>
+</div>
+<script>
+let lang='zh',current=0,answers=[];
+// Dimensions: SA=自我认知, SM=自我管理, SC=社交意识, RM=关系管理, EM=同理心
+// Each question: dim, 4 options scored 1-4
+const Q=[
+// SA - Self Awareness (5)
+{dim:'SA',zh:'当你在工作中感到焦虑时，你通常会？',en:'When you feel anxious at work, you usually?',opts:[
+{zh:'不知道自己为什么焦虑',en:"Don't know why you're anxious",s:1},
+{zh:'知道焦虑但选择忽略',en:'Aware of it but choose to ignore',s:2},
+{zh:'能识别焦虑的来源',en:'Can identify the source of anxiety',s:3},
+{zh:'准确识别情绪并理解触发原因',en:'Accurately identify the emotion and understand triggers',s:4}]},
+{dim:'SA',zh:'收到负面反馈后，你的第一反应是？',en:'After receiving negative feedback, your first reaction is?',opts:[
+{zh:'愤怒或沮丧，难以接受',en:'Anger or frustration, hard to accept',s:1},
+{zh:'表面接受但内心抗拒',en:'Accept on surface but resist inside',s:2},
+{zh:'认真思考反馈的合理性',en:'Seriously consider if the feedback is valid',s:3},
+{zh:'感激并把它当作成长机会',en:'Appreciate it as a growth opportunity',s:4}]},
+{dim:'SA',zh:'你对自己的优缺点了解程度如何？',en:'How well do you know your strengths and weaknesses?',opts:[
+{zh:'从没认真想过',en:'Never really thought about it',s:1},
+{zh:'大概知道一些',en:'Have a rough idea',s:2},
+{zh:'比较清楚，偶尔会反思',en:'Fairly clear, reflect occasionally',s:3},
+{zh:'非常清楚，经常自省和调整',en:'Very clear, frequently self-reflect and adjust',s:4}]},
+{dim:'SA',zh:'当你做了一个错误的决定时，你会？',en:'When you make a wrong decision, you?',opts:[
+{zh:'找借口或归咎他人',en:'Make excuses or blame others',s:1},
+{zh:'承认错误但很自责',en:'Admit it but feel very guilty',s:2},
+{zh:'客观分析原因，吸取教训',en:'Objectively analyze and learn from it',s:3},
+{zh:'快速承认、修正并帮助受影响的人',en:'Quickly acknowledge, fix, and help those affected',s:4}]},
+{dim:'SA',zh:'在社交场合，你能察觉自己给他人的印象吗？',en:'In social settings, can you sense the impression you give others?',opts:[
+{zh:'完全不在意别人怎么看我',en:"Don't care at all what others think",s:1},
+{zh:'偶尔会想但不确定',en:'Think about it sometimes but unsure',s:2},
+{zh:'大致能感受到他人的反应',en:'Can generally sense others\' reactions',s:3},
+{zh:'能准确读取并适时调整自己',en:'Can accurately read and adjust accordingly',s:4}]},
+// SM - Self Management (5)
+{dim:'SM',zh:'遇到突发问题打乱你的计划时，你会？',en:'When an unexpected problem disrupts your plans, you?',opts:[
+{zh:'很抓狂，无法冷静',en:'Freak out, can\'t stay calm',s:1},
+{zh:'烦躁一阵后勉强应对',en:'Get annoyed, then reluctantly cope',s:2},
+{zh:'快速调整心态应对',en:'Quickly adjust mindset and cope',s:3},
+{zh:'冷静分析，把它变成新机会',en:'Calmly analyze and turn it into opportunity',s:4}]},
+{dim:'SM',zh:'当你极度生气时，你通常会？',en:'When extremely angry, you usually?',opts:[
+{zh:'当场爆发，说了伤人的话',en:'Explode on the spot, say hurtful things',s:1},
+{zh:'压抑怒气但内心翻涌',en:'Suppress anger but churn inside',s:2},
+{zh:'先冷静下来，再处理',en:'Calm down first, then deal with it',s:3},
+{zh:'用冷静且坚定的方式表达不满',en:'Express displeasure calmly but firmly',s:4}]},
+{dim:'SM',zh:'面对长期目标，你的坚持程度如何？',en:'How persistent are you with long-term goals?',opts:[
+{zh:'经常半途而废',en:'Often give up halfway',s:1},
+{zh:'偶尔坚持，经常动摇',en:'Sometimes persist, often waver',s:2},
+{zh:'大多数情况能坚持到底',en:'Can persist in most cases',s:3},
+{zh:'无论多难都能保持动力',en:'Stay motivated no matter how hard',s:4}]},
+{dim:'SM',zh:'在压力很大的时期，你如何调节自己？',en:'During high-pressure periods, how do you regulate yourself?',opts:[
+{zh:'完全不会调节，一直焦虑',en:"Can't regulate at all, constant anxiety",s:1},
+{zh:'用消极方式（暴食、刷手机等）逃避',en:'Escape with negative coping (binge eating, scrolling, etc.)',s:2},
+{zh:'有一些健康的减压方式',en:'Have some healthy stress relief methods',s:3},
+{zh:'有成熟的自我调节系统',en:'Have a mature self-regulation system',s:4}]},
+{dim:'SM',zh:'当诱惑出现（如熬夜追剧），你能自律吗？',en:'When temptation appears (like binge-watching shows), can you be disciplined?',opts:[
+{zh:'完全无法抗拒',en:'Absolutely cannot resist',s:1},
+{zh:'大多数时候会妥协',en:'Compromise most of the time',s:2},
+{zh:'通常能控制，偶尔放纵',en:'Usually in control, occasionally indulge',s:3},
+{zh:'能灵活平衡自律和放松',en:'Can flexibly balance discipline and relaxation',s:4}]},
+// SC - Social Awareness (5)
+{dim:'SC',zh:'你能快速察觉房间里的氛围变化吗？',en:'Can you quickly sense atmosphere changes in a room?',opts:[
+{zh:'完全不会注意到',en:'Not at all',s:1},
+{zh:'别人指出来才意识到',en:'Only when others point it out',s:2},
+{zh:'经常能感受到微妙的变化',en:'Often sense subtle changes',s:3},
+{zh:'几乎总能立刻捕捉到',en:'Almost always catch it immediately',s:4}]},
+{dim:'SC',zh:'朋友说"我没事"但表情不对，你会？',en:'When a friend says "I\'m fine" but looks off, you?',opts:[
+{zh:'相信 ta 说的',en:'Believe what they said',s:1},
+{zh:'觉得有点奇怪但不追问',en:'Feel something\'s off but don\'t ask',s:2},
+{zh:'温和地继续关心',en:'Gently continue to show care',s:3},
+{zh:'找合适的方式让 ta 安心地倾诉',en:'Find the right way to let them open up safely',s:4}]},
+{dim:'SC',zh:'在团队中，你能判断谁不高兴吗？',en:'In a team, can you tell who\'s unhappy?',opts:[
+{zh:'从来没注意过',en:'Never noticed',s:1},
+{zh:'只有很明显时才能发现',en:'Only when it\'s very obvious',s:2},
+{zh:'大部分时候能感觉到',en:'Can feel it most of the time',s:3},
+{zh:'能读懂微表情和肢体语言',en:'Can read micro-expressions and body language',s:4}]},
+{dim:'SC',zh:'你关注社会问题和他人困境的程度如何？',en:'How much do you pay attention to social issues and others\' struggles?',opts:[
+{zh:'基本不关心',en:'Basically don\'t care',s:1},
+{zh:'看到相关新闻会有一点感触',en:'Feel a bit when seeing related news',s:2},
+{zh:'经常思考这些问题',en:'Often think about these issues',s:3},
+{zh:'积极关注并愿意付诸行动',en:'Actively follow and willing to take action',s:4}]},
+{dim:'SC',zh:'和来自不同文化背景的人交流时，你会？',en:'When communicating with people from different cultural backgrounds, you?',opts:[
+{zh:'感到不适，尽量避免',en:'Feel uncomfortable, try to avoid',s:1},
+{zh:'用自己的方式交流不做调整',en:'Communicate your way without adjusting',s:2},
+{zh:'会注意文化差异并尊重',en:'Notice cultural differences and show respect',s:3},
+{zh:'主动了解对方文化并灵活适应',en:'Proactively learn their culture and adapt flexibly',s:4}]},
+// RM - Relationship Management (5)
+{dim:'RM',zh:'你和朋友发生冲突后，通常会？',en:'After a conflict with a friend, you usually?',opts:[
+{zh:'不联系了，等对方来找我',en:'Cut contact, wait for them to reach out',s:1},
+{zh:'假装什么都没发生',en:'Pretend nothing happened',s:2},
+{zh:'找合适的时机主动沟通',en:'Find the right time to communicate proactively',s:3},
+{zh:'真诚地处理分歧并让关系更深',en:'Sincerely address differences and deepen the relationship',s:4}]},
+{dim:'RM',zh:'你给他人反馈时，对方的感受如何？',en:'When you give feedback, how do others feel?',opts:[
+{zh:'经常让人觉得被攻击',en:'Often make people feel attacked',s:1},
+{zh:'对方能接受但不太舒服',en:'They accept it but feel uncomfortable',s:2},
+{zh:'大多数人觉得有帮助',en:'Most people find it helpful',s:3},
+{zh:'总能让人感到被尊重和激励',en:'Always make people feel respected and motivated',s:4}]},
+{dim:'RM',zh:'在团队项目中，你扮演的角色通常是？',en:'In team projects, your role is usually?',opts:[
+{zh:'不太参与，等别人分配任务',en:'Not very involved, wait for task assignment',s:1},
+{zh:'做好自己的部分',en:'Do your own part well',s:2},
+{zh:'主动协调和帮助他人',en:'Proactively coordinate and help others',s:3},
+{zh:'凝聚团队、激发每个人的潜力',en:'Unite the team and inspire everyone\'s potential',s:4}]},
+{dim:'RM',zh:'你维护长期友谊的能力如何？',en:'How well do you maintain long-term friendships?',opts:[
+{zh:'朋友经常慢慢就断了',en:'Friends often gradually drift away',s:1},
+{zh:'被动维系，别人联系才回',en:'Passive — only respond when contacted',s:2},
+{zh:'会主动联系重要的朋友',en:'Proactively reach out to important friends',s:3},
+{zh:'擅长让每段关系都保持温度',en:'Great at keeping every relationship warm',s:4}]},
+{dim:'RM',zh:'当你需要别人帮忙时，你会？',en:'When you need help, you?',opts:[
+{zh:'不好意思开口，自己硬扛',en:'Too embarrassed to ask, tough it out alone',s:1},
+{zh:'勉强开口但觉得欠了人情',en:'Reluctantly ask but feel indebted',s:2},
+{zh:'自然地请求帮助',en:'Ask for help naturally',s:3},
+{zh:'真诚求助并找到互惠的方式',en:'Sincerely ask and find reciprocal ways',s:4}]},
+// EM - Empathy (5)
+{dim:'EM',zh:'看到别人哭泣时，你的反应是？',en:'When you see someone crying, your reaction is?',opts:[
+{zh:'有点尴尬，不知道该怎么办',en:'Feel awkward, don\'t know what to do',s:1},
+{zh:'想安慰但不知道说什么',en:'Want to comfort but don\'t know what to say',s:2},
+{zh:'能感同身受并给予适当安慰',en:'Can empathize and offer appropriate comfort',s:3},
+{zh:'能深入理解对方的痛苦并给予支持',en:'Deeply understand their pain and provide support',s:4}]},
+{dim:'EM',zh:'听到别人分享成功喜悦时，你会？',en:'When someone shares their success, you?',opts:[
+{zh:'有点嫉妒',en:'Feel a bit jealous',s:1},
+{zh:'礼貌性地祝贺',en:'Politely congratulate',s:2},
+{zh:'真心为对方高兴',en:'Genuinely happy for them',s:3},
+{zh:'由衷开心并主动了解对方的努力过程',en:'Wholeheartedly happy and ask about their journey',s:4}]},
+{dim:'EM',zh:'你能从他人的角度理解他们的行为吗？',en:'Can you understand others\' behaviors from their perspective?',opts:[
+{zh:'很难，总觉得自己是对的',en:'Difficult, always think I\'m right',s:1},
+{zh:'有时候可以但比较勉强',en:'Sometimes, but it\'s a stretch',s:2},
+{zh:'大多数情况能换位思考',en:'Can put myself in their shoes most of the time',s:3},
+{zh:'即使不同意也能理解对方为什么这样做',en:'Even when disagreeing, can understand why they did it',s:4}]},
+{dim:'EM',zh:'当身边的人情绪低落时，你会？',en:'When people around you are feeling down, you?',opts:[
+{zh:'没注意到或觉得跟自己无关',en:'Don\'t notice or think it\'s not my business',s:1},
+{zh:'意识到了但不太会处理',en:'Aware but don\'t know how to handle it',s:2},
+{zh:'主动关心并倾听',en:'Proactively care and listen',s:3},
+{zh:'不仅倾听还能帮助 ta 走出来',en:'Not only listen but help them through it',s:4}]},
+{dim:'EM',zh:'对于和你观点完全不同的人，你的态度是？',en:'Towards people with completely different views, your attitude is?',opts:[
+{zh:'觉得对方不可理喻',en:'Think they\'re unreasonable',s:1},
+{zh:'尊重但内心不认同',en:'Respect but disagree inside',s:2},
+{zh:'试图理解对方的出发点',en:'Try to understand their starting point',s:3},
+{zh:'好奇地探索差异并从中学习',en:'Curiously explore differences and learn from them',s:4}]}
+];
+
+const dimNames={
+SA:{zh:'自我认知',en:'Self-Awareness'},
+SM:{zh:'自我管理',en:'Self-Management'},
+SC:{zh:'社交意识',en:'Social Awareness'},
+RM:{zh:'关系管理',en:'Relationship Mgmt'},
+EM:{zh:'同理心',en:'Empathy'}
+};
+
+function render(){
+  const q=Q[current];
+  document.getElementById('qNum').textContent=`${current+1} / ${Q.length}`;
+  document.getElementById('qText').textContent=lang==='zh'?q.zh:q.en;
+  document.getElementById('progressBar').style.width=((current+1)/Q.length*100)+'%';
+  const od=document.getElementById('options');od.innerHTML='';
+  q.opts.forEach((o,i)=>{
+    const b=document.createElement('button');
+    b.className='option'+(answers[current]===i?' selected':'');
+    b.textContent=lang==='zh'?o.zh:o.en;
+    b.onclick=()=>{answers[current]=i;render()};
+    od.appendChild(b);
+  });
+  document.getElementById('prevBtn').disabled=current===0;
+  document.getElementById('prevBtn').textContent=lang==='zh'?'← 上一题':'← Prev';
+  const last=current===Q.length-1;
+  document.getElementById('nextBtn').textContent=last?(lang==='zh'?'查看结果 →':'See Result →'):(lang==='zh'?'下一题 →':'Next →');
+  document.getElementById('nextBtn').disabled=answers[current]===undefined;
+}
+function nav(d){if(d===1&&current===Q.length-1){showResult();return}current+=d;if(current<0)current=0;if(current>=Q.length)current=Q.length-1;render()}
+
+function showResult(){
+  const dimScores={SA:0,SM:0,SC:0,RM:0,EM:0};
+  Q.forEach((q,i)=>{if(answers[i]!==undefined)dimScores[q.dim]+=q.opts[answers[i]].s});
+  const total=Object.values(dimScores).reduce((a,b)=>a+b,0);
+  const eq=Math.round(total/100*130+20); // scale to ~50-150 range
+  let level,desc;
+  if(eq>=130){level=lang==='zh'?'🌟 情商大师':'🌟 EQ Master';desc=lang==='zh'?'你拥有卓越的情商！你能精准地感知自己和他人的情绪，在复杂的社交环境中游刃有余。你是天生的领导者和关系高手，身边的人都喜欢与你相处。':'You have exceptional EQ! You can precisely sense your own and others\' emotions, navigating complex social situations with ease. You\'re a natural leader and relationship master.';}
+  else if(eq>=110){level=lang==='zh'?'✨ 情商达人':'✨ EQ Expert';desc=lang==='zh'?'你的情商水平很高！你善于管理情绪，能敏锐地察觉社交信号。在大多数情况下，你都能妥善处理人际关系。继续保持，你已经做得很好了！':'Your EQ is quite high! You\'re good at managing emotions and sensing social signals. In most situations, you handle relationships well. Keep it up!';}
+  else if(eq>=90){level=lang==='zh'?'👍 情商良好':'👍 Good EQ';desc=lang==='zh'?'你具备不错的情商基础。你有一定的情绪管理能力和社交敏感度，但在某些维度还有提升空间。关注薄弱环节，你会变得更出色。':'You have a solid EQ foundation. You have reasonable emotional management and social sensitivity, with room for growth in some areas.';}
+  else if(eq>=70){level=lang==='zh'?'🌱 成长中':'🌱 Growing';desc=lang==='zh'?'你的情商正在发展中，有些方面做得不错，有些方面需要加强。好消息是情商是可以通过练习提升的！多关注自己的情绪变化，多练习换位思考。':'Your EQ is developing. Some areas are good, others need work. The good news is EQ can be improved through practice! Pay more attention to your emotional changes.';}
+  else{level=lang==='zh'?'💪 潜力无限':'💪 Unlimited Potential';desc=lang==='zh'?'你的情商提升空间很大，这意味着你有巨大的成长潜力！建议从认识自己的情绪开始，学会在做出反应前按下"暂停键"。每天进步一点点，未来的你会感谢现在开始改变的自己。':'You have lots of room for EQ growth, which means huge potential! Start by recognizing your own emotions, and learn to press "pause" before reacting.';}
+
+  document.getElementById('quizCard').style.display='none';
+  const rc=document.getElementById('resultCard');rc.style.display='block';
+  const dimKeys=['SA','SM','SC','RM','EM'];
+  let dimHtml=dimKeys.map(k=>{
+    const pct=Math.round(dimScores[k]/20*100);
+    return `<div class="dim-item"><span class="label">${dimNames[k][lang]}</span><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div><span class="score">${dimScores[k]}/20</span></div>`;
+  }).join('');
+
+  rc.innerHTML=`
+    <div style="text-align:center;color:#999;font-size:.9em">${lang==='zh'?'你的情商得分':'Your EQ Score'}</div>
+    <div class="eq-score">${eq}</div>
+    <div class="eq-label">${level}</div>
+    <div class="radar-wrap"><canvas id="radar" width="300" height="300"></canvas></div>
+    <div class="dim-list">${dimHtml}</div>
+    <div class="result-text">${desc}</div>
+    <div class="btn-row">
+      <button class="share-btn" onclick="copyResult(${eq})">📋 ${lang==='zh'?'复制结果分享':'Copy & Share'}</button>
+      <button class="share-btn outline" onclick="location.reload()">🔄 ${lang==='zh'?'重新测试':'Retake'}</button>
+    </div>`;
+  drawRadar(dimKeys.map(k=>dimScores[k]),dimKeys.map(k=>dimNames[k][lang]));
+}
+
+function drawRadar(values,labels){
+  const c=document.getElementById('radar'),ctx=c.getContext('2d');
+  const cx=150,cy=150,r=110,n=values.length;
+  ctx.clearRect(0,0,300,300);
+  // Grid
+  for(let lv=1;lv<=4;lv++){
+    ctx.beginPath();
+    for(let i=0;i<=n;i++){
+      const a=Math.PI*2*i/n-Math.PI/2;
+      const x=cx+r*(lv/4)*Math.cos(a),y=cy+r*(lv/4)*Math.sin(a);
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.strokeStyle='#e0e0e0';ctx.stroke();
+  }
+  // Data
+  ctx.beginPath();
+  values.forEach((v,i)=>{
+    const a=Math.PI*2*i/n-Math.PI/2;
+    const x=cx+r*(v/20)*Math.cos(a),y=cy+r*(v/20)*Math.sin(a);
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });
+  ctx.closePath();
+  ctx.fillStyle='rgba(245,87,108,.2)';ctx.fill();
+  ctx.strokeStyle='#f5576c';ctx.lineWidth=2;ctx.stroke();
+  // Dots & labels
+  values.forEach((v,i)=>{
+    const a=Math.PI*2*i/n-Math.PI/2;
+    const x=cx+r*(v/20)*Math.cos(a),y=cy+r*(v/20)*Math.sin(a);
+    ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fillStyle='#f5576c';ctx.fill();
+    const lx=cx+(r+20)*Math.cos(a),ly=cy+(r+20)*Math.sin(a);
+    ctx.fillStyle='#666';ctx.font='12px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(labels[i],lx,ly);
+  });
+}
+
+function copyResult(eq){
+  const t=lang==='zh'
+    ?`💡 我在 PsycheTest 的情商测试得了 ${eq} 分！来测测你的情商？👉 https://rorojiao.github.io/psychetest/eq.html`
+    :`💡 I scored ${eq} on PsycheTest's EQ Test! What's your EQ? 👉 https://rorojiao.github.io/psychetest/eq.html`;
+  navigator.clipboard.writeText(t).then(()=>alert(lang==='zh'?'已复制到剪贴板！':'Copied to clipboard!'));
+}
+function toggleLang(){
+  lang=lang==='zh'?'en':'zh';
+  document.getElementById('langLabel').textContent=lang==='zh'?'EN':'中文';
+  document.getElementById('homeLink').textContent=lang==='zh'?'← 返回首页':'← Home';
+  document.getElementById('tipText').textContent=lang==='zh'?'觉得测得准？请研究员喝杯咖啡 ☕':'Enjoyed the test? Buy us a coffee ☕';
+  if(document.getElementById('resultCard').style.display==='block'){showResult()}else{render()}
+}
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>心理年龄测试 - PsycheTest 心理研究所</title>
+<meta name="description" content="20道生活习惯与价值观题目，算出你真正的心理年龄。">
+<meta property="og:title" content="心理年龄测试 - PsycheTest">
+<meta property="og:description" content="你的心理年龄是多少？来测测看！">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);min-height:100vh;color:#333}
+.header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;max-width:800px;margin:0 auto}
+.logo{color:#fff;font-size:1.4em;font-weight:800;text-decoration:none}
+.lang-btn{background:rgba(255,255,255,.2);color:#fff;border:none;padding:8px 16px;border-radius:20px;cursor:pointer;font-size:.9em;backdrop-filter:blur(10px)}
+.container{max-width:700px;margin:0 auto;padding:0 20px 60px}
+.quiz-card{background:#fff;border-radius:20px;padding:36px 32px;box-shadow:0 8px 30px rgba(0,0,0,.1);margin-bottom:24px}
+.progress{background:#e9ecef;border-radius:10px;height:8px;margin-bottom:24px;overflow:hidden}
+.progress-bar{height:100%;background:linear-gradient(90deg,#4facfe,#00f2fe);border-radius:10px;transition:width .4s}
+.q-number{font-size:.85em;color:#999;margin-bottom:8px}
+.q-text{font-size:1.15em;font-weight:600;margin-bottom:20px;line-height:1.5}
+.option{display:block;width:100%;text-align:left;padding:14px 20px;margin:8px 0;border:2px solid #e9ecef;border-radius:14px;background:#fff;font-size:.95em;cursor:pointer;transition:.3s;line-height:1.5}
+.option:hover{border-color:#4facfe;background:#f0f8ff}
+.option.selected{border-color:#4facfe;background:linear-gradient(135deg,#4facfe,#00f2fe);color:#fff}
+.nav-btns{display:flex;gap:12px;margin-top:20px}
+.nav-btn{flex:1;padding:14px;border:none;border-radius:14px;font-size:1em;font-weight:600;cursor:pointer;transition:.3s}
+.nav-btn.prev{background:#e9ecef;color:#666}
+.nav-btn.next{background:linear-gradient(135deg,#4facfe,#00f2fe);color:#fff}
+.nav-btn:disabled{opacity:.4;cursor:not-allowed}
+.result-card{background:#fff;border-radius:20px;padding:36px 32px;box-shadow:0 8px 30px rgba(0,0,0,.1);text-align:center;display:none}
+.age-display{font-size:5em;font-weight:900;background:linear-gradient(135deg,#4facfe,#00f2fe);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:10px 0}
+.age-label{font-size:1.2em;color:#666;margin-bottom:20px}
+.result-desc{text-align:left;background:#f0f8ff;border-radius:14px;padding:20px;margin:20px 0;line-height:1.7;font-size:.95em;color:#555}
+.share-btn{display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#4facfe,#00f2fe);color:#fff;border:none;border-radius:14px;font-size:1em;font-weight:600;cursor:pointer;margin:10px 6px}
+.share-btn.outline{background:#fff;color:#4facfe;border:2px solid #4facfe}
+.tip-box{background:rgba(255,255,255,.12);backdrop-filter:blur(10px);border-radius:16px;padding:16px 20px;max-width:420px;margin:24px auto;text-align:center;color:#fff;font-size:.9em}
+.tip-box a{color:#ffd700;text-decoration:none;font-weight:600}
+.home-link{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9em}
+.age-input-wrap{margin:20px 0;text-align:center}
+.age-input-wrap label{font-size:1em;color:#666;display:block;margin-bottom:8px}
+.age-input{width:120px;padding:12px;border:2px solid #e9ecef;border-radius:12px;font-size:1.2em;text-align:center;outline:none}
+.age-input:focus{border-color:#4facfe}
+.start-btn{display:inline-block;padding:14px 40px;background:linear-gradient(135deg,#4facfe,#00f2fe);color:#fff;border:none;border-radius:14px;font-size:1.1em;font-weight:600;cursor:pointer;margin-top:16px}
+.intro{text-align:center;color:#fff;padding:20px 24px 0;max-width:600px;margin:0 auto}
+.intro h1{font-size:2em;margin-bottom:12px}
+.intro p{opacity:.9;font-size:1.05em}
+</style>
+</head>
+<body>
+<header class="header">
+  <a href="index.html" class="home-link" id="homeLink">← 返回首页</a>
+  <a href="index.html" class="logo">🧠 PsycheTest</a>
+  <button class="lang-btn" onclick="toggleLang()">🌐 <span id="langLabel">EN</span></button>
+</header>
+
+<div id="introSection" class="intro">
+  <h1 id="introTitle">🎂 心理年龄测试</h1>
+  <p id="introDesc">你的心理年龄和实际年龄一样吗？20道题帮你找到答案！</p>
+  <div style="background:#fff;border-radius:20px;padding:32px;margin-top:24px;max-width:400px;display:inline-block">
+    <div class="age-input-wrap">
+      <label id="ageLabel">请输入你的实际年龄</label>
+      <input type="number" class="age-input" id="realAge" min="10" max="99" placeholder="25">
+    </div>
+    <button class="start-btn" id="startBtn" onclick="startQuiz()">开始测试 →</button>
+  </div>
+</div>
+
+<div class="container" style="display:none" id="quizWrap">
+  <div class="quiz-card" id="quizCard">
+    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="q-number" id="qNum"></div>
+    <div class="q-text" id="qText"></div>
+    <div id="options"></div>
+    <div class="nav-btns">
+      <button class="nav-btn prev" id="prevBtn" onclick="nav(-1)">←</button>
+      <button class="nav-btn next" id="nextBtn" onclick="nav(1)">→</button>
+    </div>
+  </div>
+  <div class="result-card" id="resultCard"></div>
+  <div class="tip-box">
+    <span id="tipText">觉得测得准？请研究员喝杯咖啡 ☕</span><br>
+    <a href="https://etherscan.io/address/0xEeD903787Cb86bcCc17777E5C7d10A4c2De43823" target="_blank">0xEeD9...3823</a>
+  </div>
+</div>
+
+<script>
+let lang='zh',current=0,answers=[],realAge=25;
+// Each option has an "age weight": lower = younger mindset, higher = older mindset
+const Q=[
+{zh:'你通常几点睡觉？',en:'What time do you usually go to sleep?',opts:[
+{zh:'凌晨2点以后',en:'After 2 AM',a:18},{zh:'12点左右',en:'Around midnight',a:25},{zh:'11点前',en:'Before 11 PM',a:35},{zh:'10点前就困了',en:'Sleepy before 10 PM',a:50}]},
+{zh:'周末最理想的活动是？',en:'Ideal weekend activity?',opts:[
+{zh:'蹦迪/音乐节',en:'Clubbing/Music festival',a:20},{zh:'和朋友聚餐看电影',en:'Dinner & movie with friends',a:28},{zh:'在家看书喝茶',en:'Reading & tea at home',a:40},{zh:'整理家务和做饭',en:'Housework and cooking',a:45}]},
+{zh:'你对社交媒体的态度是？',en:'Your attitude toward social media?',opts:[
+{zh:'一天刷好几个小时',en:'Scroll for hours daily',a:18},{zh:'经常发动态分享生活',en:'Often post and share life updates',a:24},{zh:'偶尔看看但很少发',en:'Browse occasionally, rarely post',a:35},{zh:'觉得浪费时间，很少用',en:'Think it\'s a waste of time, rarely use',a:48}]},
+{zh:'你怎么看待存钱？',en:'How do you view saving money?',opts:[
+{zh:'及时行乐，钱花了再说',en:'Live in the moment, spend first',a:18},{zh:'会存一点但经常超支',en:'Save a bit but often overspend',a:25},{zh:'有理财规划，定期储蓄',en:'Have financial plans, save regularly',a:38},{zh:'非常节俭，能省则省',en:'Very frugal, save whenever possible',a:52}]},
+{zh:'朋友约你临时出门，你会？',en:'If friends ask you out last minute, you?',opts:[
+{zh:'立刻出发！',en:'Let\'s go right now!',a:19},{zh:'看心情，多半会去',en:'Depends on mood, probably go',a:26},{zh:'先看看日程安排',en:'Check my schedule first',a:36},{zh:'不喜欢临时安排，多半拒绝',en:'Don\'t like last-minute plans, probably decline',a:45}]},
+{zh:'你对未来最大的期待是？',en:'Your biggest hope for the future?',opts:[
+{zh:'自由自在地探索世界',en:'Freely explore the world',a:20},{zh:'事业成功，实现梦想',en:'Career success, achieve dreams',a:28},{zh:'家庭幸福，生活稳定',en:'Happy family, stable life',a:40},{zh:'健康平安就好',en:'Just health and peace',a:55}]},
+{zh:'你和父母的关系如何？',en:'How\'s your relationship with your parents?',opts:[
+{zh:'经常吵架/叛逆',en:'Often argue/rebellious',a:16},{zh:'一般般，各过各的',en:'So-so, live our own lives',a:25},{zh:'关系不错，定期联系',en:'Good, keep in regular contact',a:35},{zh:'非常亲近，经常关心他们',en:'Very close, often care for them',a:48}]},
+{zh:'你最常用的表情包风格是？',en:'Your most used emoji/sticker style?',opts:[
+{zh:'抽象搞笑梗图',en:'Abstract funny memes',a:18},{zh:'可爱动物/卡通',en:'Cute animals/cartoons',a:24},{zh:'微笑/点赞等基础表情',en:'Smile/thumbs up basics',a:38},{zh:'很少用表情包',en:'Rarely use emojis',a:50}]},
+{zh:'你对网络流行语的态度？',en:'Your attitude toward internet slang?',opts:[
+{zh:'天天用，我就是潮流',en:'Use daily, I am the trend',a:17},{zh:'了解并偶尔用',en:'Know them and use occasionally',a:25},{zh:'听说过但不太懂',en:'Heard of them but don\'t really get it',a:40},{zh:'完全不懂也不想懂',en:'Don\'t understand and don\'t want to',a:55}]},
+{zh:'遇到困难时你通常会？',en:'When facing difficulties, you usually?',opts:[
+{zh:'先崩溃再说',en:'Break down first',a:18},{zh:'找朋友倾诉求助',en:'Vent to friends and ask for help',a:25},{zh:'冷静分析解决方案',en:'Calmly analyze solutions',a:38},{zh:'接受现实，顺其自然',en:'Accept reality, let it be',a:50}]},
+{zh:'你觉得什么最重要？',en:'What do you value most?',opts:[
+{zh:'快乐和自由',en:'Happiness and freedom',a:20},{zh:'爱情和友情',en:'Love and friendship',a:26},{zh:'家庭和事业',en:'Family and career',a:38},{zh:'健康和平静',en:'Health and peace',a:52}]},
+{zh:'你的穿衣风格是？',en:'Your clothing style?',opts:[
+{zh:'潮流前卫，大胆出位',en:'Trendy and bold',a:19},{zh:'时尚好看，追求个性',en:'Fashionable, seek individuality',a:25},{zh:'简约舒适，质感优先',en:'Simple, comfortable, quality first',a:38},{zh:'怎么方便怎么穿',en:'Whatever\'s convenient',a:50}]},
+{zh:'别人说你幼稚时，你会？',en:'When someone calls you immature, you?',opts:[
+{zh:'觉得是夸奖，年轻真好',en:'Take it as a compliment',a:18},{zh:'有点不开心但无所谓',en:'Slightly annoyed but whatever',a:26},{zh:'认真反思自己的行为',en:'Seriously reflect on your behavior',a:38},{zh:'觉得自己确实不够成熟',en:'Feel you\'re indeed not mature enough',a:42}]},
+{zh:'你的音乐品味偏向？',en:'Your music taste leans toward?',opts:[
+{zh:'说唱/电子/最新热歌',en:'Rap/EDM/Latest hits',a:19},{zh:'流行/独立/摇滚',en:'Pop/Indie/Rock',a:26},{zh:'民谣/爵士/古典',en:'Folk/Jazz/Classical',a:40},{zh:'老歌/怀旧金曲',en:'Oldies/Nostalgic classics',a:52}]},
+{zh:'你对结婚的看法是？',en:'Your view on marriage?',opts:[
+{zh:'完全没想过，还早呢',en:'Haven\'t thought about it at all',a:18},{zh:'向往但不着急',en:'Look forward to it but no rush',a:26},{zh:'到了合适的时候就该结',en:'Should get married at the right time',a:38},{zh:'婚姻是人生大事，要慎重',en:'Marriage is a big deal, be cautious',a:48}]},
+{zh:'你怎么处理和别人的分歧？',en:'How do you handle disagreements?',opts:[
+{zh:'据理力争，绝不认输',en:'Argue hard, never give in',a:18},{zh:'表达观点但能妥协',en:'Express views but can compromise',a:28},{zh:'求同存异，理性沟通',en:'Seek common ground, communicate rationally',a:38},{zh:'多一事不如少一事',en:'Avoid trouble when possible',a:50}]},
+{zh:'你对健康养生的态度？',en:'Your attitude toward health & wellness?',opts:[
+{zh:'身体好得很，不用管',en:'I\'m healthy, no need to worry',a:18},{zh:'偶尔注意一下',en:'Pay attention sometimes',a:26},{zh:'比较注重，有健康习惯',en:'Quite mindful, have healthy habits',a:38},{zh:'非常重视，定期体检',en:'Very serious, regular check-ups',a:52}]},
+{zh:'你的朋友圈子怎样？',en:'Your friend circle?',opts:[
+{zh:'朋友超多，社交达人',en:'Tons of friends, social butterfly',a:20},{zh:'有几个固定的好友',en:'A few close friends',a:28},{zh:'圈子不大但关系深',en:'Small circle but deep bonds',a:38},{zh:'越来越喜欢独处',en:'Increasingly enjoy solitude',a:50}]},
+{zh:'你觉得年龄意味着什么？',en:'What does age mean to you?',opts:[
+{zh:'只是个数字，心态最重要',en:'Just a number, mindset matters most',a:22},{zh:'每个年龄有每个年龄的美好',en:'Every age has its own beauty',a:30},{zh:'年龄带来经验和智慧',en:'Age brings experience and wisdom',a:42},{zh:'希望时间慢一点',en:'Wish time would slow down',a:52}]},
+{zh:'你最近一次为什么而感动？',en:'What moved you recently?',opts:[
+{zh:'一个搞笑视频把我笑哭了',en:'A funny video made me cry laughing',a:18},{zh:'朋友的一个暖心举动',en:'A warm gesture from a friend',a:26},{zh:'一部有深度的电影或书',en:'A deep movie or book',a:38},{zh:'看到孩子的成长或父母的白发',en:'Seeing children grow or parents\' gray hair',a:50}]}
+];
+
+function startQuiz(){
+  const v=parseInt(document.getElementById('realAge').value);
+  if(!v||v<10||v>99){alert(lang==='zh'?'请输入有效年龄（10-99）':'Please enter a valid age (10-99)');return}
+  realAge=v;
+  document.getElementById('introSection').style.display='none';
+  document.getElementById('quizWrap').style.display='block';
+  render();
+}
+
+function render(){
+  const q=Q[current];
+  document.getElementById('qNum').textContent=`${current+1} / ${Q.length}`;
+  document.getElementById('qText').textContent=lang==='zh'?q.zh:q.en;
+  document.getElementById('progressBar').style.width=((current+1)/Q.length*100)+'%';
+  const od=document.getElementById('options');od.innerHTML='';
+  q.opts.forEach((o,i)=>{
+    const b=document.createElement('button');
+    b.className='option'+(answers[current]===i?' selected':'');
+    b.textContent=lang==='zh'?o.zh:o.en;
+    b.onclick=()=>{answers[current]=i;render()};
+    od.appendChild(b);
+  });
+  document.getElementById('prevBtn').disabled=current===0;
+  document.getElementById('prevBtn').textContent=lang==='zh'?'← 上一题':'← Prev';
+  const last=current===Q.length-1;
+  document.getElementById('nextBtn').textContent=last?(lang==='zh'?'查看结果 →':'See Result →'):(lang==='zh'?'下一题 →':'Next →');
+  document.getElementById('nextBtn').disabled=answers[current]===undefined;
+}
+function nav(d){if(d===1&&current===Q.length-1){showResult();return}current+=d;if(current<0)current=0;if(current>=Q.length)current=Q.length-1;render()}
+
+function showResult(){
+  let total=0,count=0;
+  Q.forEach((q,i)=>{if(answers[i]!==undefined){total+=q.opts[answers[i]].a;count++}});
+  const mentalAge=Math.round(total/count);
+  const diff=mentalAge-realAge;
+  let emoji,title,desc;
+  if(diff<=-10){emoji='👶';title=lang==='zh'?'永远的少年/少女！':'Forever Young!';desc=lang==='zh'?`你的心理年龄比实际年龄小 ${Math.abs(diff)} 岁！你保持着孩童般的好奇心和纯真。你热爱新鲜事物，不怕冒险，生活对你来说永远充满惊喜。不过偶尔也需要多一点责任感哦～`:`Your mental age is ${Math.abs(diff)} years younger than your real age! You maintain a child-like curiosity and innocence. You love novelty and adventure — life is always full of surprises for you.`}
+  else if(diff<=-3){emoji='🌸';title=lang==='zh'?'年轻的心态':'Youthful Mindset';desc=lang==='zh'?`你的心理年龄比实际年龄小 ${Math.abs(diff)} 岁。你有一颗年轻的心，积极乐观，善于发现生活中的小确幸。你在成熟与活力之间找到了很好的平衡。`:`Your mental age is ${Math.abs(diff)} years younger. You have a youthful heart, optimistic and great at finding small joys in life. You've found a great balance between maturity and vitality.`}
+  else if(diff<=3){emoji='⚖️';title=lang==='zh'?'身心同龄':'Age-Aligned';desc=lang==='zh'?'你的心理年龄和实际年龄非常接近！你对自己有清晰的认知，生活方式和心态都很匹配你的人生阶段。你是一个活得很"真实"的人。':'Your mental age closely matches your real age! You have clear self-awareness, and your lifestyle and mindset match your life stage. You\'re living authentically.'}
+  else if(diff<=10){emoji='🦉';title=lang==='zh'?'成熟的灵魂':'Mature Soul';desc=lang==='zh'?`你的心理年龄比实际年龄大 ${diff} 岁。你比同龄人更成熟稳重，思考问题更有深度。朋友们经常来找你寻求建议。不过别忘了偶尔放松，享受当下的快乐！`:`Your mental age is ${diff} years older. You're more mature than peers, with deeper thinking. Friends often seek your advice. But don't forget to relax and enjoy the moment!`}
+  else{emoji='🧙';title=lang==='zh'?'老灵魂':'Old Soul';desc=lang==='zh'?`你的心理年龄比实际年龄大 ${diff} 岁！你拥有超越年龄的智慧和沉稳。你可能从小就比同龄人成熟，对人生有独到的见解。记得时不时释放内心的童真，生活会更有趣！`:`Your mental age is ${diff} years older! You possess wisdom and calmness beyond your years. You've probably been mature since childhood. Remember to unleash your inner child sometimes!`}
+
+  document.getElementById('quizCard').style.display='none';
+  const rc=document.getElementById('resultCard');rc.style.display='block';
+  rc.innerHTML=`
+    <div style="font-size:3em">${emoji}</div>
+    <div style="color:#999;margin-top:8px">${lang==='zh'?'你的心理年龄是':'Your mental age is'}</div>
+    <div class="age-display">${mentalAge}</div>
+    <div class="age-label">${title}</div>
+    <div style="display:flex;justify-content:center;gap:20px;margin:16px 0">
+      <div style="background:#f0f8ff;padding:12px 24px;border-radius:12px"><div style="font-size:.8em;color:#999">${lang==='zh'?'实际年龄':'Real Age'}</div><div style="font-size:1.5em;font-weight:700">${realAge}</div></div>
+      <div style="background:#f0f8ff;padding:12px 24px;border-radius:12px"><div style="font-size:.8em;color:#999">${lang==='zh'?'心理年龄':'Mental Age'}</div><div style="font-size:1.5em;font-weight:700;color:#4facfe">${mentalAge}</div></div>
+      <div style="background:#f0f8ff;padding:12px 24px;border-radius:12px"><div style="font-size:.8em;color:#999">${lang==='zh'?'差距':'Gap'}</div><div style="font-size:1.5em;font-weight:700;color:${diff>0?'#f5576c':'#00c853'}">${diff>0?'+':''}${diff}</div></div>
+    </div>
+    <div class="result-desc">${desc}</div>
+    <button class="share-btn" onclick="copyResult(${mentalAge})">📋 ${lang==='zh'?'复制结果分享':'Copy & Share'}</button>
+    <button class="share-btn outline" onclick="location.reload()">🔄 ${lang==='zh'?'重新测试':'Retake'}</button>
+  `;
+}
+
+function copyResult(ma){
+  const t=lang==='zh'
+    ?`🎂 我在 PsycheTest 的心理年龄测试结果：实际年龄 ${realAge}，心理年龄 ${ma}！来测测你的心理年龄？👉 https://rorojiao.github.io/psychetest/mental-age.html`
+    :`🎂 My PsycheTest Mental Age result: Real age ${realAge}, Mental age ${ma}! What's yours? 👉 https://rorojiao.github.io/psychetest/mental-age.html`;
+  navigator.clipboard.writeText(t).then(()=>alert(lang==='zh'?'已复制到剪贴板！':'Copied to clipboard!'));
+}
+function toggleLang(){
+  lang=lang==='zh'?'en':'zh';
+  document.getElementById('langLabel').textContent=lang==='zh'?'EN':'中文';
+  document.getElementById('homeLink').textContent=lang==='zh'?'← 返回首页':'← Home';
+  document.getElementById('tipText').textContent=lang==='zh'?'觉得测得准？请研究员喝杯咖啡 ☕':'Enjoyed the test? Buy us a coffee ☕';
+  document.getElementById('introTitle').textContent=lang==='zh'?'🎂 心理年龄测试':'🎂 Mental Age Test';
+  document.getElementById('introDesc').textContent=lang==='zh'?'你的心理年龄和实际年龄一样吗？20道题帮你找到答案！':'Is your mental age the same as your real age? 20 questions to find out!';
+  document.getElementById('ageLabel').textContent=lang==='zh'?'请输入你的实际年龄':'Enter your real age';
+  document.getElementById('startBtn').textContent=lang==='zh'?'开始测试 →':'Start Test →';
+  if(document.getElementById('resultCard').style.display==='block'){showResult()}
+  else if(document.getElementById('quizWrap').style.display==='block'){render()}
+}
+</script>
+</body>
+</html>

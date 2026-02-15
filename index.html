@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PsycheTest 心理研究所 - 趣味心理测试</title>
+<meta name="description" content="PsycheTest 心理研究所 - MBTI性格测试、情商测试、心理年龄测试、色彩心理测试。有趣、有深度的心理测试平台。">
+<meta property="og:title" content="PsycheTest 心理研究所">
+<meta property="og:description" content="发现真实的自己 - MBTI、情商、心理年龄、色彩心理测试">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://rorojiao.github.io/psychetest/">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","name":"PsycheTest 心理研究所","url":"https://rorojiao.github.io/psychetest/","description":"Fun & Insightful Psychology Tests"}
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;color:#333}
+.header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;max-width:900px;margin:0 auto}
+.logo{color:#fff;font-size:1.6em;font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.2)}
+.logo span{font-size:.5em;display:block;font-weight:400;opacity:.85}
+.lang-btn{background:rgba(255,255,255,.2);color:#fff;border:none;padding:8px 16px;border-radius:20px;cursor:pointer;font-size:.9em;backdrop-filter:blur(10px);transition:.3s}
+.lang-btn:hover{background:rgba(255,255,255,.35)}
+.hero{text-align:center;padding:40px 24px 20px;color:#fff}
+.hero h1{font-size:2.2em;margin-bottom:12px}
+.hero p{font-size:1.1em;opacity:.9;max-width:500px;margin:0 auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;padding:20px 24px 60px;max-width:900px;margin:0 auto}
+.card{background:#fff;border-radius:20px;padding:32px 28px;text-decoration:none;color:#333;transition:transform .3s,box-shadow .3s;box-shadow:0 4px 20px rgba(0,0,0,.08);position:relative;overflow:hidden}
+.card:hover{transform:translateY(-6px);box-shadow:0 12px 40px rgba(0,0,0,.15)}
+.card-icon{font-size:3em;margin-bottom:16px}
+.card h2{font-size:1.3em;margin-bottom:8px}
+.card p{font-size:.95em;color:#666;line-height:1.6}
+.card .tag{display:inline-block;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:4px 12px;border-radius:12px;font-size:.75em;margin-top:12px}
+.footer{text-align:center;padding:30px 24px;color:rgba(255,255,255,.7);font-size:.85em}
+.footer a{color:rgba(255,255,255,.9)}
+.tip-box{background:rgba(255,255,255,.12);backdrop-filter:blur(10px);border-radius:16px;padding:16px 20px;max-width:420px;margin:20px auto 0;text-align:center;color:#fff}
+.tip-box a{color:#ffd700;text-decoration:none;font-weight:600}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="logo" id="logo">🧠 PsycheTest<span id="logoSub">心理研究所</span></div>
+  <button class="lang-btn" onclick="toggleLang()">🌐 <span id="langLabel">EN</span></button>
+</header>
+<section class="hero">
+  <h1 id="heroTitle">探索你的内心世界</h1>
+  <p id="heroDesc">科学有趣的心理测试，帮你发现真实的自己。完成测试后可分享结果给朋友！</p>
+</section>
+<div class="grid">
+  <a class="card" href="mbti.html">
+    <div class="card-icon">🧩</div>
+    <h2 class="card-title" data-zh="MBTI 性格测试" data-en="MBTI Personality Test">MBTI 性格测试</h2>
+    <p class="card-desc" data-zh="28道题揭示你的16型人格。了解你的性格特征、职业倾向和恋爱风格。" data-en="28 questions to reveal your personality type among 16 types. Discover your traits, career paths & love style.">28道题揭示你的16型人格。了解你的性格特征、职业倾向和恋爱风格。</p>
+    <span class="tag" data-zh="⏱ 约5分钟" data-en="⏱ ~5 min">⏱ 约5分钟</span>
+  </a>
+  <a class="card" href="eq.html">
+    <div class="card-icon">💡</div>
+    <h2 class="card-title" data-zh="情商 EQ 测试" data-en="EQ Test">情商 EQ 测试</h2>
+    <p class="card-desc" data-zh="25道情景题测量你的情商水平。获取5维度雷达图，发现你的社交超能力。" data-en="25 scenario-based questions to measure your EQ. Get a 5-dimension radar chart of your social superpowers.">25道情景题测量你的情商水平。获取5维度雷达图，发现你的社交超能力。</p>
+    <span class="tag" data-zh="⏱ 约6分钟" data-en="⏱ ~6 min">⏱ 约6分钟</span>
+  </a>
+  <a class="card" href="mental-age.html">
+    <div class="card-icon">🎂</div>
+    <h2 class="card-title" data-zh="心理年龄测试" data-en="Mental Age Test">心理年龄测试</h2>
+    <p class="card-desc" data-zh="20道生活习惯与价值观题目，算出你的心理年龄。你是老灵魂还是永远的少年？" data-en="20 lifestyle & values questions to calculate your mental age. Are you an old soul or forever young?">20道生活习惯与价值观题目，算出你的心理年龄。你是老灵魂还是永远的少年？</p>
+    <span class="tag" data-zh="⏱ 约4分钟" data-en="⏱ ~4 min">⏱ 约4分钟</span>
+  </a>
+  <a class="card" href="color.html">
+    <div class="card-icon">🎨</div>
+    <h2 class="card-title" data-zh="色彩心理测试" data-en="Color Psychology Test">色彩心理测试</h2>
+    <p class="card-desc" data-zh="选择你最喜欢的颜色组合，揭示隐藏在色彩背后的性格密码。" data-en="Choose your favorite color combinations to reveal the personality secrets hidden behind colors.">选择你最喜欢的颜色组合，揭示隐藏在色彩背后的性格密码。</p>
+    <span class="tag" data-zh="⏱ 约3分钟" data-en="⏱ ~3 min">⏱ 约3分钟</span>
+  </a>
+</div>
+<div class="tip-box" id="tipBox">
+  <span id="tipText">觉得测得准？请研究员喝杯咖啡 ☕</span><br>
+  <a href="https://etherscan.io/address/0xEeD903787Cb86bcCc17777E5C7d10A4c2De43823" target="_blank">0xEeD9...3823</a>
+</div>
+<footer class="footer"><span id="footerText">© 2026 PsycheTest 心理研究所 | 仅供娱乐参考</span></footer>
+<script>
+let lang='zh';
+function toggleLang(){
+  lang=lang==='zh'?'en':'zh';
+  document.getElementById('langLabel').textContent=lang==='zh'?'EN':'中文';
+  document.getElementById('heroTitle').textContent=lang==='zh'?'探索你的内心世界':'Explore Your Inner World';
+  document.getElementById('heroDesc').textContent=lang==='zh'?'科学有趣的心理测试，帮你发现真实的自己。完成测试后可分享结果给朋友！':'Fun & scientific psychology tests to discover the real you. Share your results with friends!';
+  document.getElementById('logoSub').textContent=lang==='zh'?'心理研究所':'Psychology Lab';
+  document.getElementById('tipText').textContent=lang==='zh'?'觉得测得准？请研究员喝杯咖啡 ☕':'Enjoyed the test? Buy us a coffee ☕';
+  document.getElementById('footerText').textContent=lang==='zh'?'© 2026 PsycheTest 心理研究所 | 仅供娱乐参考':'© 2026 PsycheTest | For entertainment purposes only';
+  document.querySelectorAll('[data-'+lang+']').forEach(el=>{el.textContent=el.getAttribute('data-'+lang)});
+}
+</script>
+</body>
+</html>

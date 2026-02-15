@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>色彩心理测试 - PsycheTest 心理研究所</title>
+<meta name="description" content="选择你最喜欢的颜色组合，揭示隐藏在色彩背后的性格密码。">
+<meta property="og:title" content="色彩心理测试 - PsycheTest">
+<meta property="og:description" content="你最喜欢的颜色暴露了你的性格！来测测看～">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,#a18cd1 0%,#fbc2eb 100%);min-height:100vh;color:#333}
+.header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;max-width:800px;margin:0 auto}
+.logo{color:#fff;font-size:1.4em;font-weight:800;text-decoration:none}
+.lang-btn{background:rgba(255,255,255,.2);color:#fff;border:none;padding:8px 16px;border-radius:20px;cursor:pointer;font-size:.9em;backdrop-filter:blur(10px)}
+.container{max-width:700px;margin:0 auto;padding:0 20px 60px}
+.quiz-card{background:#fff;border-radius:20px;padding:36px 28px;box-shadow:0 8px 30px rgba(0,0,0,.1);margin-bottom:24px}
+.progress{background:#e9ecef;border-radius:10px;height:8px;margin-bottom:24px;overflow:hidden}
+.progress-bar{height:100%;background:linear-gradient(90deg,#a18cd1,#fbc2eb);border-radius:10px;transition:width .4s}
+.q-number{font-size:.85em;color:#999;margin-bottom:8px}
+.q-text{font-size:1.15em;font-weight:600;margin-bottom:20px;line-height:1.5;text-align:center}
+.color-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.color-opt{border-radius:16px;padding:0;height:120px;cursor:pointer;border:4px solid transparent;transition:.3s;position:relative;overflow:hidden}
+.color-opt:hover{transform:scale(1.03);box-shadow:0 6px 20px rgba(0,0,0,.15)}
+.color-opt.selected{border-color:#333;box-shadow:0 0 0 2px #fff,0 0 0 6px #333}
+.color-opt .label{position:absolute;bottom:8px;left:0;right:0;text-align:center;color:#fff;font-weight:600;font-size:.85em;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+.nav-btns{display:flex;gap:12px;margin-top:20px}
+.nav-btn{flex:1;padding:14px;border:none;border-radius:14px;font-size:1em;font-weight:600;cursor:pointer;transition:.3s}
+.nav-btn.prev{background:#e9ecef;color:#666}
+.nav-btn.next{background:linear-gradient(135deg,#a18cd1,#fbc2eb);color:#fff}
+.nav-btn:disabled{opacity:.4;cursor:not-allowed}
+.result-card{background:#fff;border-radius:20px;padding:36px 32px;box-shadow:0 8px 30px rgba(0,0,0,.1);text-align:center;display:none}
+.result-color-bar{height:80px;border-radius:16px;margin:16px 0}
+.result-title{font-size:1.6em;font-weight:800;margin:16px 0 8px}
+.result-sub{font-size:1em;color:#888;margin-bottom:20px}
+.result-section{text-align:left;margin:16px 0;padding:16px;background:#f8f4ff;border-radius:14px}
+.result-section h3{font-size:1em;color:#a18cd1;margin-bottom:8px}
+.result-section p{line-height:1.7;font-size:.95em;color:#555}
+.share-btn{display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#a18cd1,#fbc2eb);color:#fff;border:none;border-radius:14px;font-size:1em;font-weight:600;cursor:pointer;margin:10px 6px}
+.share-btn.outline{background:#fff;color:#a18cd1;border:2px solid #a18cd1}
+.tip-box{background:rgba(255,255,255,.12);backdrop-filter:blur(10px);border-radius:16px;padding:16px 20px;max-width:420px;margin:24px auto;text-align:center;color:#fff;font-size:.9em}
+.tip-box a{color:#ffd700;text-decoration:none;font-weight:600}
+.home-link{color:rgba(255,255,255,.8);text-decoration:none;font-size:.9em}
+.traits{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.trait{background:linear-gradient(135deg,#a18cd1,#fbc2eb);color:#fff;padding:6px 14px;border-radius:20px;font-size:.85em}
+</style>
+</head>
+<body>
+<header class="header">
+  <a href="index.html" class="home-link" id="homeLink">← 返回首页</a>
+  <a href="index.html" class="logo">🧠 PsycheTest</a>
+  <button class="lang-btn" onclick="toggleLang()">🌐 <span id="langLabel">EN</span></button>
+</header>
+<div class="container">
+  <div class="quiz-card" id="quizCard">
+    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="q-number" id="qNum"></div>
+    <div class="q-text" id="qText"></div>
+    <div class="color-grid" id="options"></div>
+    <div class="nav-btns">
+      <button class="nav-btn prev" id="prevBtn" onclick="nav(-1)">←</button>
+      <button class="nav-btn next" id="nextBtn" onclick="nav(1)">→</button>
+    </div>
+  </div>
+  <div class="result-card" id="resultCard"></div>
+  <div class="tip-box">
+    <span id="tipText">觉得测得准？请研究员喝杯咖啡 ☕</span><br>
+    <a href="https://etherscan.io/address/0xEeD903787Cb86bcCc17777E5C7d10A4c2De43823" target="_blank">0xEeD9...3823</a>
+  </div>
+</div>
+<script>
+let lang='zh',current=0,answers=[];
+// Score dimensions: W=warm, C=cool, E=energetic, P=peaceful, D=deep, L=light
+const Q=[
+{zh:'选择最吸引你的颜色',en:'Choose the color that attracts you most',opts:[
+{bg:'linear-gradient(135deg,#ff6b6b,#ee5a24)',zh:'热情红',en:'Passionate Red',scores:{W:3,E:3}},
+{bg:'linear-gradient(135deg,#4facfe,#00f2fe)',zh:'宁静蓝',en:'Serene Blue',scores:{C:3,P:3}},
+{bg:'linear-gradient(135deg,#f9d423,#ff4e50)',zh:'活力橙',en:'Vibrant Orange',scores:{W:2,E:3,L:1}},
+{bg:'linear-gradient(135deg,#0cebeb,#20e3b2)',zh:'清新绿',en:'Fresh Green',scores:{C:2,P:2,L:2}}]},
+{zh:'哪个色彩组合让你感到舒适？',en:'Which color combination feels comfortable?',opts:[
+{bg:'linear-gradient(135deg,#667eea,#764ba2)',zh:'梦幻紫',en:'Dreamy Purple',scores:{C:2,D:3,L:1}},
+{bg:'linear-gradient(135deg,#f093fb,#f5576c)',zh:'浪漫粉',en:'Romantic Pink',scores:{W:3,L:2,E:1}},
+{bg:'linear-gradient(135deg,#434343,#000000)',zh:'沉稳黑',en:'Steady Black',scores:{D:3,C:2,P:1}},
+{bg:'linear-gradient(135deg,#ffecd2,#fcb69f)',zh:'温暖杏',en:'Warm Apricot',scores:{W:3,P:2,L:1}}]},
+{zh:'如果给你的心情选一个颜色？',en:'If you could color your mood right now?',opts:[
+{bg:'linear-gradient(135deg,#ffd700,#ffaa00)',zh:'阳光金',en:'Sunny Gold',scores:{W:2,E:3,L:1}},
+{bg:'linear-gradient(135deg,#a8e6cf,#dcedc1)',zh:'薄荷绿',en:'Mint Green',scores:{C:1,P:3,L:2}},
+{bg:'linear-gradient(135deg,#d4418e,#0652c5)',zh:'深邃靛',en:'Deep Indigo',scores:{D:3,C:2}},
+{bg:'linear-gradient(135deg,#ff9a9e,#fecfef)',zh:'樱花粉',en:'Cherry Blossom',scores:{W:2,L:3,P:1}}]},
+{zh:'哪个颜色代表你的能量？',en:'Which color represents your energy?',opts:[
+{bg:'linear-gradient(135deg,#ff0844,#ffb199)',zh:'烈焰红',en:'Flame Red',scores:{W:3,E:3}},
+{bg:'linear-gradient(135deg,#96fbc4,#f9f586)',zh:'春日绿',en:'Spring Green',scores:{P:2,L:2,E:2}},
+{bg:'linear-gradient(135deg,#1a2a6c,#b21f1f,#fdbb2d)',zh:'星空彩',en:'Starry Mix',scores:{D:2,E:2,W:1,C:1}},
+{bg:'linear-gradient(135deg,#e0c3fc,#8ec5fc)',zh:'晨雾紫',en:'Morning Mist',scores:{C:2,P:2,L:2}}]},
+{zh:'哪种颜色让你联想到"安全感"？',en:'Which color makes you feel "safe"?',opts:[
+{bg:'linear-gradient(135deg,#3a1c71,#d76d77,#ffaf7b)',zh:'暮色橘',en:'Twilight Orange',scores:{W:2,D:1,P:2,E:1}},
+{bg:'linear-gradient(135deg,#89f7fe,#66a6ff)',zh:'天空蓝',en:'Sky Blue',scores:{C:3,P:2,L:1}},
+{bg:'linear-gradient(135deg,#c1dfc4,#deecdd)',zh:'橄榄绿',en:'Olive Green',scores:{P:3,C:1,D:1}},
+{bg:'linear-gradient(135deg,#fff1eb,#ace0f9)',zh:'棉花白',en:'Cotton White',scores:{L:3,P:2,C:1}}]},
+{zh:'你想住在什么颜色的房间？',en:'What color room would you like to live in?',opts:[
+{bg:'linear-gradient(135deg,#fa709a,#fee140)',zh:'落日粉',en:'Sunset Pink',scores:{W:3,E:2,L:1}},
+{bg:'linear-gradient(135deg,#a1c4fd,#c2e9fb)',zh:'冰川蓝',en:'Glacier Blue',scores:{C:3,P:2,L:1}},
+{bg:'linear-gradient(135deg,#d4fc79,#96e6a1)',zh:'森林绿',en:'Forest Green',scores:{P:3,C:1,L:1}},
+{bg:'linear-gradient(135deg,#434343,#1a1a2e)',zh:'午夜蓝黑',en:'Midnight Blue',scores:{D:3,C:2}}]},
+{zh:'哪种颜色最能表达"爱"？',en:'Which color best expresses "love"?',opts:[
+{bg:'linear-gradient(135deg,#ff6a88,#ff99ac)',zh:'玫瑰红',en:'Rose Red',scores:{W:3,E:2}},
+{bg:'linear-gradient(135deg,#fbc2eb,#a6c1ee)',zh:'薰衣草紫',en:'Lavender',scores:{C:1,L:2,P:2,W:1}},
+{bg:'linear-gradient(135deg,#f9d423,#e65c00)',zh:'热烈橙',en:'Fiery Orange',scores:{W:2,E:3,L:1}},
+{bg:'linear-gradient(135deg,#ffecd2,#fcb69f)',zh:'暖阳杏',en:'Warm Sun',scores:{W:3,P:1,L:2}}]},
+{zh:'最后，选一个代表"你"的颜色',en:'Finally, choose a color that represents "you"',opts:[
+{bg:'linear-gradient(135deg,#ff416c,#ff4b2b)',zh:'炽热红',en:'Blazing Red',scores:{W:3,E:3}},
+{bg:'linear-gradient(135deg,#6a11cb,#2575fc)',zh:'智慧蓝',en:'Wisdom Blue',scores:{C:3,D:2,P:1}},
+{bg:'linear-gradient(135deg,#11998e,#38ef7d)',zh:'生机绿',en:'Vital Green',scores:{P:2,E:2,L:1,C:1}},
+{bg:'linear-gradient(135deg,#f7971e,#ffd200)',zh:'灿烂金',en:'Brilliant Gold',scores:{W:2,E:2,L:2}}]}
+];
+
+const RESULTS=[
+{id:'fire',minScore:{W:12,E:10},
+bg:'linear-gradient(135deg,#ff416c,#ff4b2b)',
+zh:{t:'🔥 烈焰型人格',sub:'热情、勇敢、有领导力',d:'你是一个充满热情和能量的人。你天生具有领导力，不怕挑战，敢于表达自己的想法。你的存在感很强，走到哪里都能成为焦点。你热爱生活，追求刺激和新体验。',strengths:'领导力、行动力、感染力、勇气',challenge:'有时候需要学会放慢脚步，倾听他人的声音。冲动可能是你的弱点。'},
+en:{t:'🔥 Fire Personality',sub:'Passionate, Brave, Leadership',d:'You\'re full of passion and energy. A natural leader who isn\'t afraid of challenges and speaks your mind boldly. You have a strong presence wherever you go. You love life and seek thrills and new experiences.',strengths:'Leadership, Action, Charisma, Courage',challenge:'Sometimes you need to slow down and listen to others. Impulsiveness can be your weakness.'}},
+{id:'ocean',minScore:{C:12,P:8},
+bg:'linear-gradient(135deg,#4facfe,#00f2fe)',
+zh:{t:'🌊 海洋型人格',sub:'沉稳、智慧、有深度',d:'你像大海一样深邃而包容。你善于思考，有着非凡的洞察力。你不轻易表态，但一旦发言总是一针见血。你追求内心的平静，是朋友眼中最值得信赖的人。',strengths:'智慧、冷静、可靠、深度思考',challenge:'有时候可能显得过于冷淡或疏离。试着多表达自己的感受。'},
+en:{t:'🌊 Ocean Personality',sub:'Calm, Wise, Deep',d:'You\'re deep and inclusive like the ocean. You\'re great at thinking with extraordinary insight. You don\'t speak easily, but when you do, it\'s always on point. You seek inner peace and are the most trustworthy friend.',strengths:'Wisdom, Calmness, Reliability, Deep Thinking',challenge:'Sometimes you may seem too cold or distant. Try expressing your feelings more.'}},
+{id:'sunshine',minScore:{L:10,W:8},
+bg:'linear-gradient(135deg,#f9d423,#ff4e50)',
+zh:{t:'☀️ 阳光型人格',sub:'乐观、温暖、有亲和力',d:'你就像一束温暖的阳光，走到哪里就照亮哪里。你天性乐观，总能看到事情好的一面。你善于与人建立温暖的关系，你的笑容能治愈身边的每一个人。',strengths:'乐观、亲和力、治愈力、人缘好',challenge:'有时候可能太在意别人的感受而忽略了自己。学会说"不"也很重要。'},
+en:{t:'☀️ Sunshine Personality',sub:'Optimistic, Warm, Approachable',d:'You\'re like a ray of warm sunshine, brightening everywhere you go. Naturally optimistic, you always see the bright side. You build warm relationships easily, and your smile heals everyone around you.',strengths:'Optimism, Approachability, Healing, Popularity',challenge:'Sometimes you care too much about others\' feelings and neglect your own. Learning to say "no" is important too.'}},
+{id:'forest',minScore:{P:10,C:6},
+bg:'linear-gradient(135deg,#11998e,#38ef7d)',
+zh:{t:'🌿 森林型人格',sub:'平和、自然、有治愈力',d:'你有着森林般的沉静与治愈力。你崇尚自然和简单的生活方式，不追求物质的奢华。你的存在让人感到安心和放松，你是天生的倾听者和疗愈者。',strengths:'平和、包容、自然、治愈力',challenge:'可能过于随和而缺乏主见。有时候需要更坚定地表达自己的立场。'},
+en:{t:'🌿 Forest Personality',sub:'Peaceful, Natural, Healing',d:'You have the serenity and healing power of a forest. You value nature and simple living over material luxury. Your presence makes people feel safe and relaxed. You\'re a natural listener and healer.',strengths:'Peace, Tolerance, Naturalness, Healing',challenge:'You might be too agreeable and lack assertiveness. Sometimes you need to express your stance more firmly.'}},
+{id:'cosmos',minScore:{D:10},
+bg:'linear-gradient(135deg,#1a2a6c,#b21f1f,#fdbb2d)',
+zh:{t:'🌌 星空型人格',sub:'神秘、独立、有创造力',d:'你拥有星空般的深邃和神秘。你的思想超越了日常，总是在探索更深层的意义。你独立且有创造力，不受世俗束缚。你的内心世界丰富得令人着迷。',strengths:'创造力、独立性、深度、神秘感',challenge:'有时候可能过于沉浸在自己的世界里。试着更多地与现实世界连接。'},
+en:{t:'🌌 Cosmos Personality',sub:'Mysterious, Independent, Creative',d:'You possess the depth and mystery of a starry sky. Your thinking transcends the everyday, always exploring deeper meaning. Independent and creative, you\'re not bound by convention. Your inner world is fascinatingly rich.',strengths:'Creativity, Independence, Depth, Mystery',challenge:'Sometimes you might get too lost in your own world. Try connecting more with the real world.'}},
+{id:'rainbow',minScore:{},
+bg:'linear-gradient(135deg,#a18cd1,#fbc2eb,#fad0c4,#ffd1ff)',
+zh:{t:'🌈 彩虹型人格',sub:'多元、适应力强、独特',d:'你就像彩虹一样绚烂多彩。你不属于任何单一类型，你的性格是多面的、灵活的。你能适应各种环境和角色，与不同类型的人都能相处融洽。你的独特之处在于你的多样性。',strengths:'适应力、多面性、包容性、独特性',challenge:'可能有时候不太确定真正的自己是什么样的。试着找到自己的核心价值观。'},
+en:{t:'🌈 Rainbow Personality',sub:'Diverse, Adaptable, Unique',d:'You\'re as vibrant and colorful as a rainbow. You don\'t belong to any single type — your personality is multifaceted and flexible. You adapt to various environments and get along with all types of people. Your uniqueness lies in your diversity.',strengths:'Adaptability, Versatility, Inclusiveness, Uniqueness',challenge:'Sometimes you might not be sure who you truly are. Try finding your core values.'}}
+];
+
+function render(){
+  const q=Q[current];
+  document.getElementById('qNum').textContent=`${current+1} / ${Q.length}`;
+  document.getElementById('qText').textContent=lang==='zh'?q.zh:q.en;
+  document.getElementById('progressBar').style.width=((current+1)/Q.length*100)+'%';
+  const od=document.getElementById('options');od.innerHTML='';
+  q.opts.forEach((o,i)=>{
+    const d=document.createElement('div');
+    d.className='color-opt'+(answers[current]===i?' selected':'');
+    d.style.background=o.bg;
+    d.innerHTML=`<span class="label">${lang==='zh'?o.zh:o.en}</span>`;
+    d.onclick=()=>{answers[current]=i;render()};
+    od.appendChild(d);
+  });
+  document.getElementById('prevBtn').disabled=current===0;
+  document.getElementById('prevBtn').textContent=lang==='zh'?'← 上一题':'← Prev';
+  const last=current===Q.length-1;
+  document.getElementById('nextBtn').textContent=last?(lang==='zh'?'查看结果 →':'See Result →'):(lang==='zh'?'下一题 →':'Next →');
+  document.getElementById('nextBtn').disabled=answers[current]===undefined;
+}
+function nav(d){if(d===1&&current===Q.length-1){showResult();return}current+=d;if(current<0)current=0;if(current>=Q.length)current=Q.length-1;render()}
+
+function showResult(){
+  const scores={W:0,C:0,E:0,P:0,D:0,L:0};
+  Q.forEach((q,i)=>{if(answers[i]!==undefined){const s=q.opts[answers[i]].scores;Object.keys(s).forEach(k=>scores[k]+=s[k])}});
+  let result=RESULTS[RESULTS.length-1]; // default rainbow
+  for(let r of RESULTS){
+    if(r.id==='rainbow')continue;
+    let match=true;
+    for(let k in r.minScore){if((scores[k]||0)<r.minScore[k]){match=false;break}}
+    if(match){result=r;break}
+  }
+  const d=result[lang];
+  document.getElementById('quizCard').style.display='none';
+  const rc=document.getElementById('resultCard');rc.style.display='block';
+  rc.innerHTML=`
+    <div class="result-color-bar" style="background:${result.bg}"></div>
+    <div class="result-title">${d.t}</div>
+    <div class="result-sub">${d.sub}</div>
+    <div class="result-section"><h3>🎨 ${lang==='zh'?'性格描述':'Personality Description'}</h3><p>${d.d}</p></div>
+    <div class="result-section"><h3>💪 ${lang==='zh'?'核心优势':'Core Strengths'}</h3><div class="traits">${d.strengths.split('、').join(',').split(',').map(s=>`<span class="trait">${s.trim()}</span>`).join('')}</div></div>
+    <div class="result-section"><h3>🌱 ${lang==='zh'?'成长建议':'Growth Advice'}</h3><p>${d.challenge}</p></div>
+    <button class="share-btn" onclick="copyResult()">📋 ${lang==='zh'?'复制结果分享':'Copy & Share'}</button>
+    <button class="share-btn outline" onclick="location.reload()">🔄 ${lang==='zh'?'重新测试':'Retake'}</button>
+  `;
+  window._resultTitle=d.t;
+}
+function copyResult(){
+  const t=lang==='zh'
+    ?`🎨 我在 PsycheTest 的色彩心理测试结果是：${window._resultTitle}！你的颜色性格是什么？👉 https://rorojiao.github.io/psychetest/color.html`
+    :`🎨 My PsycheTest Color Psychology result: ${window._resultTitle}! What's your color personality? 👉 https://rorojiao.github.io/psychetest/color.html`;
+  navigator.clipboard.writeText(t).then(()=>alert(lang==='zh'?'已复制到剪贴板！':'Copied to clipboard!'));
+}
+function toggleLang(){
+  lang=lang==='zh'?'en':'zh';
+  document.getElementById('langLabel').textContent=lang==='zh'?'EN':'中文';
+  document.getElementById('homeLink').textContent=lang==='zh'?'← 返回首页':'← Home';
+  document.getElementById('tipText').textContent=lang==='zh'?'觉得测得准？请研究员喝杯咖啡 ☕':'Enjoyed the test? Buy us a coffee ☕';
+  if(document.getElementById('resultCard').style.display==='block'){showResult()}else{render()}
+}
+render();
+</script>
+</body>
+</html>
