@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://rorojiao.github.io/psychetest/sitemap.xml
